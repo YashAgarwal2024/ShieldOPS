@@ -17,6 +17,24 @@ app.get('/api/health', (req, res) => {
 const clientRoutes = require('./routes/clientRoutes');
 app.use('/api/clients', clientRoutes);
 
+const staffRoutes = require('./routes/staffRoutes');
+app.use('/api/staff', staffRoutes);
+
+const contractRoutes = require('./routes/contractRoutes');
+app.use('/api/contracts', contractRoutes);
+
+const deploymentRoutes = require('./routes/deploymentRoutes');
+app.use('/api/deployments', deploymentRoutes);
+
+const attendanceRoutes = require('./routes/attendanceRoutes');
+app.use('/api/attendance', attendanceRoutes);
+
+const invoiceRoutes = require('./routes/invoiceRoutes');
+app.use('/api/invoices', invoiceRoutes);
+
+const paymentRoutes = require('./routes/paymentRoutes');
+app.use('/api/payments', paymentRoutes);
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, async () => {
