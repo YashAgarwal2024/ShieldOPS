@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShieldOps</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-wxVirti..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #090d18; color: #f8fafc; overflow-x: hidden; }
+    .app { display: flex; min-height: 100vh; }
+    .sidebar { position: relative; width: 280px; background: rgba(15, 22, 42, 0.72); border-right: 1px solid rgba(59, 130, 246, 0.35); backdrop-filter: blur(11px); box-shadow: 4px 0 20px rgba(0,0,0,0.35); }
+    #particles-js { position: absolute; inset: 0; z-index: 1; }
+    .sidebar-inner { position: relative; z-index: 2; display: flex; flex-direction: column; height: 100%; padding: 1.5rem 1rem; }
+    .shield-logo { display: flex; align-items: center; margin-bottom: 2rem; }
+    .shield-logo i { font-size: 2rem; color: #3b82f6; animation: float 2.2s ease-in-out infinite; margin-right: 0.8rem; }
+    .shield-logo span { font-size: 1.7rem; font-weight: 700; letter-spacing: 0.04em; color: #e2e8f0; }
+    @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+    .menu { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+    .menu-item { position: relative; display: flex; align-items: center; gap: 0.75rem; padding: 0.8rem 0.9rem; border-radius: 10px; color: #e2e8f0; cursor: pointer; transition: all 0.3s ease; }
+    .menu-item:hover { background: rgba(59, 130, 246, 0.23); box-shadow: 0 0 15px rgba(59, 130, 246, 0.4); }
+    .menu-item.active { background: rgba(59, 130, 246, 0.38); box-shadow: 0 0 20px rgba(59, 130, 246, 0.55); }
+    .menu-item.active::before { content: ''; position: absolute; left: -10px; width: 4px; height: 100%; background: linear-gradient(180deg, #3b82f6, #0ea5e9, #dbeafe); box-shadow: 0 0 12px rgba(59, 130, 246, 0.90); border-radius: 3px; animation: glow-border 1.6s ease-in-out infinite; }
+    @keyframes glow-border { 0%,100% { box-shadow: 0 0 12px rgba(59, 130, 246, 0.95); } 50% { box-shadow: 0 0 24px rgba(96, 165, 250, 0.9); }}
+    .menu-item i { width: 20px; text-align: center; }
+    .navbar { flex: 1; height: 64px; background: linear-gradient(125deg, #0f172a, #1e293b); border-bottom: 1px solid rgba(59,130,246,0.25); box-shadow: 0 4px 12px rgba(0,0,0,0.25); display: flex; justify-content: space-between; align-items: center; padding: 0 1.5rem; position: sticky; top:0; z-index: 20; }
+    .navbar::before { content: ''; position: absolute; inset:0; background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.15), rgba(255,255,255,0.05)); opacity: 0.2; animation: shimmer 4s linear infinite; }
+    @keyframes shimmer { 0%{background-position: -200px 0;} 100%{background-position: calc(200px + 100%) 0;}}
+    .navbar > * { position: relative; z-index:2; }
+    .navbar .title { font-size: 1.28rem; font-weight: 700; color: #eef2ff; }
+    .btn { padding: 0.55rem 1rem; font-weight: 600; border-radius: 0.55rem; border: 1px solid #3b82f6; background: rgba(59, 130, 246, 0.8); color:#fff; cursor:pointer; transition: transform .3s ease, box-shadow .3s ease; }
+    .btn:hover { box-shadow: 0 0 16px rgba(59,130,246,.55); }
+    .btn:active { transform: scale(0.98); }
+    .ripple { position: absolute; border-radius: 50%; transform: scale(0); animation: ripple 0.65s linear; background: rgba(255,255,255,0.7); }
+    @keyframes ripple { to { transform: scale(4); opacity: 0; }}
+    .content { flex: 1; background: #0b1121; padding: 1.5rem; overflow-y: auto; }
+    .card { background: rgba(255,255,255,0.08); border: 1px solid rgba(59, 130, 246, 0.5); border-radius: 18px; padding: 2rem; backdrop-filter: blur(11px); box-shadow: 0 12px 30px rgba(0,0,0,0.35); border-image: linear-gradient(135deg, #3b82f6, #7dd3fc, #60a5fa) 1; }
+    .card h2 { font-size: 1.9rem; color: #bae6fd; margin-bottom: 0.5rem; }
+    .card p { color: #cbd5e1; line-height: 1.65; }
+    .main-grid { margin-top: 1.5rem; display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 1rem; }
+    .stat { background: rgba(15, 23, 42,0.65); border: 1px solid rgba(56, 189, 248, .38); border-radius: 14px; padding: 1rem; color: #e0f2fe; }
+    .stat h3 { font-size: 1.1rem; margin-bottom: .45rem; }
+    .stat span { font-size: 1.7rem; font-weight:700; }
+    .load-area { opacity: 0; transform: translateY(20px); }
+    @media (max-width: 950px) { .app { flex-direction: column; } .sidebar { width: 100%; min-height: 300px; } .navbar { position: relative; } }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div id="particles-js"></div>
+      <div class="sidebar-inner">
+        <div class="shield-logo"><i class="fas fa-shield-alt"></i><span>ShieldOps</span></div>
+        <ul class="menu" id="menuList">
+          <li class="menu-item active" data-target="dashboard"><a href="index.html"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
+          <li class="menu-item" data-target="clients"><a href="clients.html"><i class="fas fa-users"></i>Clients</a></li>
+          <li class="menu-item" data-target="staff"><a href="staff.html"><i class="fas fa-user-friends"></i>Staff</a></li>
+          <li class="menu-item" data-target="contracts"><a href="contracts.html"><i class="fas fa-file-contract"></i>Contracts</a></li>
+          <li class="menu-item" data-target="deployments"><a href="deployments.html"><i class="fas fa-map-marker-alt"></i>Deployments</a></li>
+          <li class="menu-item" data-target="attendance"><a href="attendance.html"><i class="fas fa-calendar-check"></i>Attendance</a></li>
+          <li class="menu-item" data-target="invoices"><a href="invoices.html"><i class="fas fa-receipt"></i>Invoices</a></li>
+          <li class="menu-item" data-target="payments"><a href="payments.html"><i class="fas fa-credit-card"></i>Payments</a></li>
+        </ul>
+      </div>
+    </aside>
+    <div class="main-panel">
+      <header class="navbar">
+        <div class="title">ShieldOps Admin</div>
+        <button class="btn" id="logoutBtn">Logout</button>
+      </header>
+      <section class="content" id="contentArea">
+        <div class="card load-area" id="welcomeCard">
+          <h2>Welcome to ShieldOps Dashboard</h2>
+          <p>Use the sidebar to navigate through clients, staff, contracts, deployments, and your operations data. Everything is built for speed and clarity.</p>
+        </div>
+        <div class="main-grid load-area" id="stats">
+          <div class="stat"><h3>Active Clients</h3><span>36</span></div>
+          <div class="stat"><h3>Staff On Duty</h3><span>128</span></div>
+          <div class="stat"><h3>Contracts</h3><span>19</span></div>
+          <div class="stat"><h3>Unpaid Invoices</h3><span>7</span></div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+  <script>
+    particlesJS('particles-js', {
+      particles: { number: { value: 70, density: { enable: true, value_area: 900 } }, color: { value: '#3b82f6' }, shape: { type: 'circle' }, opacity: { value: 0.75 }, size: { value: 2 }, line_linked: { enable: true, distance: 120, color: '#3b82f6', opacity: 0.18, width: 1 }, move: { enable: true, speed: 2, direction: 'none', out_mode: 'bounce' } },
+      interactivity: { detect_on: 'canvas', events: { onhover: { enable: true, mode: 'grab' }, onclick: { enable: true, mode: 'push' }, resize: true }, modes: { grab: { distance: 140, line_linked: { opacity: 0.45 } }, push: { particles_nb: 4 } } }, retina_detect: true
+    });
+
+    anime.timeline({ easing: 'easeOutExpo', duration: 800 })
+      .add({ targets: '.sidebar-inner', translateX: [-300, 0], opacity: [0, 1] })
+      .add({ targets: '.navbar', opacity: [0, 1], translateY: [-20, 0] }, '-=500')
+      .add({ targets: '.load-area', opacity: [0, 1], translateY: [20, 0], delay: anime.stagger(120) });
+
+    document.querySelectorAll('.menu-item').forEach(item => {
+      item.addEventListener('click', (e) => {
+        document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+
+        const target = item.dataset.target;
+        const contentArea = document.getElementById('contentArea');
+        anime.timeline({ duration: 400, easing:'easeInOutQuad' })
+          .add({ targets: contentArea, opacity: [1, 0], translateX: [0, -30] })
+          .add({ targets: contentArea, opacity: [0, 1], translateX: [30, 0], complete: () => {
+            document.getElementById('welcomeCard').querySelector('h2').textContent = `Viewing ${target.charAt(0).toUpperCase() + target.slice(1)}`;
+            document.getElementById('welcomeCard').querySelector('p').textContent = `Data and actions for ${target} will appear here.`;
+          } }, '+=50');
+
+        // ripple effect
+        const btn = e.currentTarget;
+        const circle = document.createElement('span');
+        const diameter = Math.max(btn.clientWidth, btn.clientHeight);
+        const radius = diameter / 2;
+        circle.style.width = circle.style.height = `${diameter}px`;
+        circle.style.left = `${e.clientX - btn.getBoundingClientRect().left - radius}px`;
+        circle.style.top = `${e.clientY - btn.getBoundingClientRect().top - radius}px`;
+        circle.classList.add('ripple');
+        const rip = btn.getElementsByClassName('ripple')[0];
+        if (rip) rip.remove();
+        btn.appendChild(circle);
+      });
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', (e) => {
+      const btn = e.currentTarget;
+      const circle = document.createElement('span');
+      const diameter = Math.max(btn.clientWidth, btn.clientHeight);
+      const radius = diameter / 2;
+      circle.style.width = circle.style.height = `${diameter}px`;
+      circle.style.left = `${e.clientX - btn.getBoundingClientRect().left - radius}px`;
+      circle.style.top = `${e.clientY - btn.getBoundingClientRect().top - radius}px`;
+      circle.classList.add('ripple');
+      const existing = btn.getElementsByClassName('ripple')[0]; if (existing) existing.remove();
+      btn.appendChild(circle);
+      setTimeout(() => alert('Logout clicked (stubbed).'), 300);
+    });
+    async function loadStats() {
+      try {
+        const [clientsRes, staffRes, contractsRes, invoicesRes] = await Promise.all([
+          fetch('http://localhost:5000/api/clients'),
+          fetch('http://localhost:5000/api/staff'),
+          fetch('http://localhost:5000/api/contracts'),
+          fetch('http://localhost:5000/api/invoices')
+        ]);
+        const clients = await clientsRes.json();
+        const staff = await staffRes.json();
+        const contracts = await contractsRes.json();
+        const invoices = await invoicesRes.json();
+        document.querySelector('.stat:nth-child(1) span').textContent = clients.length;
+        document.querySelector('.stat:nth-child(2) span').textContent = staff.length;
+        document.querySelector('.stat:nth-child(3) span').textContent = contracts.length;
+        const unpaid = invoices.filter(inv => inv.status === 'unpaid').length;
+        document.querySelector('.stat:nth-child(4) span').textContent = unpaid;
+      } catch (err) {
+        console.error('Error loading stats:', err);
+      }
+    }
+
+    loadStats();  </script>
+</body>
+</html>
