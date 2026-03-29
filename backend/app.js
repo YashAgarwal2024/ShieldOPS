@@ -14,6 +14,9 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'OK' });
 });
 
+const clientRoutes = require('./routes/clientRoutes');
+app.use('/api/clients', clientRoutes);
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, async () => {
