@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShieldOps Deployments</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: #090d18; color: #e2e8f0; min-height: 100vh; }
+    .app { display: flex; min-height: 100vh; }
+    .sidebar { width: 280px; background: rgba(15, 23, 42, 0.74); border-right: 1px solid rgba(59, 130, 246, 0.35); backdrop-filter: blur(10px); }
+    .sidebar-inner { padding: 1.6rem; }
+    .shield-logo { display: flex; align-items: center; margin-bottom: 2rem; }
+    .shield-logo i { font-size: 2rem; color: #3b82f6; margin-right: .7rem; animation: float 2.2s ease-in-out infinite; }
+    @keyframes float { 0%,100% { transform: translateY(0);} 50% { transform: translateY(-8px);} }
+    .menu { list-style: none; display: flex; flex-direction: column; gap: 0.55rem; }
+    .menu-item { display: flex; align-items: center; gap: .7rem; padding: .78rem .9rem; border-radius: 10px; cursor: pointer; transition: all .2s; color: #e2e8f0; }
+    .menu-item:hover, .menu-item.active { background: rgba(59, 130, 246, .3); box-shadow: 0 0 14px rgba(59, 130, 246, .48); }
+    .menu-item.active::before { content: ''; position: absolute; left: 0; width: 4px; height: 100%; background: linear-gradient(180deg,#3b82f6,#60a5fa); border-radius: 2px; }
+    .navbar { position: sticky; top: 0; z-index: 20; height: 60px; display:flex; justify-content: space-between; align-items: center; padding: 0 1.5rem; background: linear-gradient(125deg, rgba(7, 12, 31, .95), rgba(15, 23, 42, .95)); border-bottom:1px solid rgba(59,130,246,.2); }
+    .navbar .title { font-size:1.35rem; font-weight:700; }
+    .btn { border:1px solid #3b82f6; background:rgba(59,130,246,.8); color:#fff; padding:.52rem .98rem; border-radius:.5rem; cursor:pointer; font-weight:600; position:relative; overflow:hidden; }
+    .btn:hover { box-shadow:0 0 16px rgba(59,130,246,.5); }
+    .content { flex:1; padding:1.5rem; background:#060b18; }
+    .glass-card { background: rgba(255,255,255,.08); border:1px solid rgba(59,130,246,.35); border-radius:16px; backdrop-filter: blur(10px); box-shadow:0 15px 35px rgba(0,0,0,.25); padding:1.5rem; margin-bottom:1.25rem; }
+    .glass-card h2 { color:#dbeafe; margin-bottom:.65rem; }
+    .input-grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap:1rem; margin-bottom:1rem; }
+    label { font-size:.9rem; color:#cbd5e1; margin-bottom:.25rem; display:block; }
+    input, select { width:100%; padding:.7rem .85rem; border-radius:10px; border:1px solid rgba(148,163,184,.35); background: rgba(15, 23, 42, .88); color:#f8fafc; }
+    .submit-btn { background:#3b82f6; border:1px solid #60a5fa; transition:.2s; }
+    .submit-btn:hover { box-shadow: 0 0 18px rgba(59,130,246,.65); }
+    .table { width: 100%; border-collapse: collapse; margin-top: .75rem; }
+    .table th, .table td { padding: .7rem .8rem; border-bottom:1px solid rgba(147,197,253,.15); }
+    .table th { text-align:left; color:#93c5fd; background:rgba(15,23,42,.8); }
+    .table tbody tr:hover { background: rgba(59,130,246,.14); }
+    .toast { position: fixed; top: 20px; right: 20px; min-width: 260px; padding: .85rem 1rem; border-radius: 10px; font-weight: 600; box-shadow: 0 10px 25px rgba(0,0,0,.45); background: rgba(15,23,42,.9); color:#fff; opacity:0; transform: translateY(-10px); transition: opacity .25s ease, transform .25s ease; z-index: 999; }
+    .toast.show { opacity:1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-inner">
+        <div class="shield-logo"><i class="fas fa-shield-alt"></i><span>ShieldOps</span></div>
+        <nav>
+          <ul class="menu">
+            <li class="menu-item" onclick="location.href='index.html';"><i class="fas fa-tachometer-alt"></i>Dashboard</li>
+            <li class="menu-item" onclick="location.href='clients.html';"><i class="fas fa-users"></i>Clients</li>
+            <li class="menu-item" onclick="location.href='staff.html';"><i class="fas fa-user-friends"></i>Staff</li>
+            <li class="menu-item" onclick="location.href='contracts.html';"><i class="fas fa-file-contract"></i>Contracts</li>
+            <li class="menu-item active"><i class="fas fa-map-marker-alt"></i>Deployments</li>
+            <li class="menu-item" onclick="location.href='attendance.html';"><i class="fas fa-calendar-check"></i>Attendance</li>
+            <li class="menu-item" onclick="location.href='invoices.html';"><i class="fas fa-receipt"></i>Invoices</li>
+            <li class="menu-item" onclick="location.href='payments.html';"><i class="fas fa-credit-card"></i>Payments</li>
+          </ul>
+        </nav>
+      </div>
+    </aside>
+    <div style="flex:1; display:flex; flex-direction:column;">
+      <header class="navbar">
+        <div class="title">ShieldOps Deployments</div>
+        <button class="btn" id="logoutBtn">Logout</button>
+      </header>
+      <main class="content">
+        <section class="glass-card">
+          <h2>Assign Staff to Contract</h2>
+          <form id="deploymentForm">
+            <div class="input-grid">
+              <div><label for="staff_id">Staff ID</label><input id="staff_id" name="staff_id" type="number" required /></div>
+              <div><label for="contract_id">Contract ID</label><input id="contract_id" name="contract_id" type="number" required /></div>
+              <div><label for="shift">Shift</label><select id="shift" name="shift" required><option value="morning">Morning</option><option value="evening">Evening</option><option value="night">Night</option></select></div>
+              <div><label for="duty_start">Duty Start Time</label><input id="duty_start" name="duty_start" type="time" required /></div>
+              <div><label for="duty_end">Duty End Time</label><input id="duty_end" name="duty_end" type="time" required /></div>
+            </div>
+            <button class="btn submit-btn" type="submit">Submit</button>
+          </form>
+        </section>
+        <section class="glass-card">
+          <h2>All Deployments</h2>
+          <div style="overflow-x:auto;"><table class="table" id="deploymentsTable">
+            <thead><tr><th>ID</th><th>Staff ID</th><th>Contract ID</th><th>Shift</th><th>Duty Start</th><th>Duty End</th></tr></thead>
+            <tbody><tr><td colspan="6">Loading...</td></tr></tbody>
+          </table></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    const toast = document.getElementById('toast');
+    function showToast(msg, success=true) {
+      toast.textContent = msg;
+      toast.style.background = success ? 'rgba(34,197,94,0.95)' : 'rgba(220,38,38,0.95)';
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2600);
+    }
+
+    async function loadDeployments() {
+      const tbody = document.querySelector('#deploymentsTable tbody');
+      try {
+        const res = await fetch('http://localhost:5000/api/deployments');
+        if (!res.ok) throw new Error('Cannot load deployments');
+        const data = await res.json();
+        if (!Array.isArray(data) || data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6">No deployments found.</td></tr>';
+          return;
+        }
+        tbody.innerHTML = data.map(deployment => 
+          `<tr><td>${deployment.deployment_id}</td><td>${deployment.staff_id}</td><td>${deployment.contract_id}</td><td>${deployment.shift}</td><td>${deployment.duty_start}</td><td>${deployment.duty_end}</td></tr>`
+        ).join('');
+      } catch (err) {
+        tbody.innerHTML = '<tr><td colspan="6">Error loading deployments.</td></tr>';
+        showToast(err.message, false);
+      }
+    }
+
+    document.getElementById('deploymentForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const data = {
+        staff_id: parseInt(form.staff_id.value),
+        contract_id: parseInt(form.contract_id.value),
+        shift: form.shift.value,
+        duty_start: form.duty_start.value,
+        duty_end: form.duty_end.value,
+      };
+      try {
+        const res = await fetch('http://localhost:5000/api/deployments', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const result = await res.json();
+        if (!res.ok) {
+          if (result.error === 'Staff already deployed in this shift') {
+            showToast('Staff already deployed in this shift', false);
+          } else {
+            throw new Error(result.error || 'Failed to add deployment');
+          }
+          return;
+        }
+        showToast('Deployment added successfully!');
+        form.reset();
+        await loadDeployments();
+      } catch (err) {
+        showToast(err.message, false);
+      }
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', () => showToast('Logged out (demo).'));
+
+    loadDeployments();
+  </script>
+</body>
+</html>
